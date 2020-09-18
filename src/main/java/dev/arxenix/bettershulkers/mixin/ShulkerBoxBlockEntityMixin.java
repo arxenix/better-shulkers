@@ -27,10 +27,10 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
             at=@At("TAIL")
     )
     public void fromTag(BlockState state, CompoundTag tag, CallbackInfo ci) {
-        System.out.println("fromTag called");
-        System.out.println(tag.toString());
+        //System.out.println("fromTag called");
+        //System.out.println(tag.toString());
         if (tag.contains("Enchantments", 9)) {
-            System.out.println("has Enchantments!!");
+            //System.out.println("has Enchantments!!");
             this.enchantmentData = tag.getList("Enchantments", 10);
         }
     }
@@ -41,11 +41,8 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
             cancellable = true
     )
     public void toTag(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
-        System.out.println("toTag called!");
-        System.out.println("Intended tag:");
-        System.out.println(tag.toString());
-
-        System.out.println("Setting Enchantments key!");
+        //System.out.println("toTag called!");
+        //System.out.println(tag.toString());
         tag.put("Enchantments", enchantmentData);
     }
 

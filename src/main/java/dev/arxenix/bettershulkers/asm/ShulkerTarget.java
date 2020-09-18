@@ -1,6 +1,6 @@
 package dev.arxenix.bettershulkers.asm;
 
-import dev.arxenix.bettershulkers.BetterShulkers;
+import dev.arxenix.bettershulkers.ShulkerUtilsKt;
 import dev.arxenix.bettershulkers.mixin.EnchantmentTargetMixin;
 
 import net.minecraft.item.Item;
@@ -8,8 +8,8 @@ import net.minecraft.item.Item;
 public class ShulkerTarget extends EnchantmentTargetMixin {
     @Override
     public boolean isAcceptableItem(Item item) {
-        System.out.println("checking item for ShulkerTarget");
+        //System.out.println("checking item for ShulkerTarget");
         //return item == Items.SHULKER_BOX;
-        return BetterShulkers.Companion.isShulker(item);
+        return ShulkerUtilsKt.isShulker(item);
     }
 }

@@ -63,7 +63,7 @@ abstract class ShulkerBoxBlockMixin extends Block {
         CompoundTag compoundTag = sbe.serializeInventory(new CompoundTag());
         ListTag enchantmentData = ((EnchantmentHolder) sbe).getEnchantments();
         if (enchantmentData != null) {
-            System.out.println("we have enchantment data!");
+            //System.out.println("we have enchantment data!");
             itemStack.putSubTag("Enchantments", enchantmentData);
             compoundTag.put("Enchantments", enchantmentData);
         }
@@ -88,7 +88,7 @@ abstract class ShulkerBoxBlockMixin extends Block {
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof ShulkerBoxBlockEntity) {
             if (!world.isClient && player.isCreative()) {
-                System.out.println("is a shulkerboxblockentity!");
+                //System.out.println("is a shulkerboxblockentity!");
                 ShulkerBoxBlockEntity sbe = (ShulkerBoxBlockEntity) be;
 
                 ItemStack itemStack = buildItemStack(sbe);

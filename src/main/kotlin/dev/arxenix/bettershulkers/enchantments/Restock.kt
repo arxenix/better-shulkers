@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.tag.BlockTags
 
 
-class Feeder(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<EquipmentSlot>) :
+class Restock(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<EquipmentSlot>) :
     Enchantment(weight, type, slotTypes) {
     override fun getMinPower(level: Int): Int {
         return 0
@@ -27,7 +27,7 @@ class Feeder(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<Equipment
     }
 
     override fun isAcceptableItem(stack: ItemStack): Boolean {
-        println("checking item for feeder enchant")
+        println("checking item for restock enchant")
         // TODO - make sure the shulkers are not stacked for compatibility with other mods
         val item = stack.item
         return item is BlockItem && item.block.isIn(BlockTags.SHULKER_BOXES)

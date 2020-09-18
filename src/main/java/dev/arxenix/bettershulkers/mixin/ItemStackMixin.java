@@ -1,6 +1,6 @@
 package dev.arxenix.bettershulkers.mixin;
 
-import dev.arxenix.bettershulkers.BetterShulkers;
+import dev.arxenix.bettershulkers.ShulkerUtilsKt;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,9 +26,9 @@ abstract class ItemStackMixin {
             at=@At("TAIL")
     )
     public void addEnchantment(Enchantment enchantment, int level, CallbackInfo ci) {
-        System.out.println("addEnchantment called");
-        if (BetterShulkers.Companion.isShulker(getItem())) {
-            System.out.println("adding BET to item");
+        //System.out.println("addEnchantment called");
+        if (ShulkerUtilsKt.isShulker(getItem())) {
+            //System.out.println("adding BET to item");
             CompoundTag beTag = getSubTag("BlockEntityTag");
             if (beTag == null) beTag = new CompoundTag();
             beTag.put("Enchantments", this.getTag().get("Enchantments"));
