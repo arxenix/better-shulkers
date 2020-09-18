@@ -7,7 +7,7 @@ import net.minecraft.entity.EquipmentSlot
 import net.minecraft.item.ItemStack
 
 
-class Restock(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<EquipmentSlot>) :
+class Vacuum(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<EquipmentSlot>) :
     Enchantment(weight, type, slotTypes) {
     override fun getMinPower(level: Int): Int {
         return 0

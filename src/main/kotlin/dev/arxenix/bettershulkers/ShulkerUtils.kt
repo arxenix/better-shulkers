@@ -2,10 +2,10 @@ package dev.arxenix.bettershulkers
 
 import net.minecraft.block.Block
 import net.minecraft.enchantment.EnchantmentHelper
+import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
-import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
@@ -81,17 +81,40 @@ fun getShulkers(inv: Inventory): List<Pair<Int, ItemStack>> {
     return shulkerIndexList
 }
 
-fun processItemConsume(player: PlayerEntity, stack: ItemStack, amount: Int, slot: Int) {
-    val shulkers = getShulkers(player.inventory)
+fun DefaultedList<ItemStack>.removeStack(slot: Int, amount: Int): ItemStack {
+    return Inventories.splitStack(this, slot, amount)
+}
 
-    val restockers = shulkers.filter { EnchantmentHelper.getLevel(RESTOCK_ENCHANT, it.second) > 0 }
-
-    for (restocker in restockers) {
-
+fun canTransfer(from: ItemStack, to: ItemStack): Boolean {
+    return if (to.item !== from.item) {
+        false
+    } /*else if (stack2.count + stack1.count > stack2.maxCount) {
+        false
+    } */else if (to.hasTag() xor from.hasTag()) {
+        false
+    } else {
+        !to.hasTag() || to.tag == from.tag
     }
+}
 
-
-    if (shulkers.isNotEmpty()) {
-
+fun processItemConsume(player: PlayerEntity, stack: ItemStack, slot: Int) {
+    // TODO - adapt for consuming multiple of the item at once?
+    // TODO - make it work when the stack size is zero
+    if (stack.isEmpty) return
+    val shulkers = getShulkers(player.inventory)
+    val restockers = shulkers.filter { EnchantmentHelper.getLevel(RESTOCK_ENCHANT, it.second) > 0 }
+    for (restocker in restockers) {
+        val shulker = restocker.second
+        val stacks = getShulkerInv(shulker)
+        for (shulkerStack in stacks) {
+            if (!shulkerStack.isEmpty) {
+                if (canTransfer(shulkerStack, stack)) {
+                    shulkerStack.decrement(1)
+                    stack.increment(1)
+                    setShulkerInv(shulker, stacks)
+                    return
+                }
+            }
+        }
     }
 }

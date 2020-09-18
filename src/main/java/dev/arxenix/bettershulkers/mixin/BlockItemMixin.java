@@ -46,7 +46,7 @@ abstract public class BlockItemMixin extends Item {
                 if (ctx.getPlayer().getActiveHand() == Hand.MAIN_HAND) {
                     slot = ctx.getPlayer().inventory.selectedSlot;
                 }
-                ShulkerUtilsKt.processItemConsume(ctx.getPlayer(), ctx.getStack(), 1, slot);
+                ShulkerUtilsKt.processItemConsume(ctx.getPlayer(), ctx.getStack(), slot);
             }
         }
     }

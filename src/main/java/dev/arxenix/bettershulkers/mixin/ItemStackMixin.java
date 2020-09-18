@@ -21,6 +21,8 @@ abstract class ItemStackMixin {
     // nullable
     @Shadow public abstract CompoundTag getTag();
 
+    @Shadow public abstract CompoundTag getOrCreateSubTag(String key);
+
     @Inject(
             method= "addEnchantment(Lnet/minecraft/enchantment/Enchantment;I)V",
             at=@At("TAIL")
@@ -29,8 +31,7 @@ abstract class ItemStackMixin {
         //System.out.println("addEnchantment called");
         if (ShulkerUtilsKt.isShulker(getItem())) {
             //System.out.println("adding BET to item");
-            CompoundTag beTag = getSubTag("BlockEntityTag");
-            if (beTag == null) beTag = new CompoundTag();
+            CompoundTag beTag = getOrCreateSubTag("BlockEntityTag");
             beTag.put("Enchantments", this.getTag().get("Enchantments"));
         }
     }
