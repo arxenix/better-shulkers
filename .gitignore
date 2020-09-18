@@ -1,0 +1,23 @@
+# gradle
+
+.gradle/
+build/
+out/
+.classpath
+.project
+.settings/
+bin/
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# fabric
+
+run/
+minecraft/
+
+production/

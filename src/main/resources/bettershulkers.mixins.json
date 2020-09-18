@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "dev.arxenix.bettershulkers.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockItemMixin",
+    "EnchantmentTargetMixin",
+    "ItemStackMixin",
+    "LootableContainerBlockEntityAccessor",
+    "ShulkerBoxBlockMixin"
+  ],
+  "client": [
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

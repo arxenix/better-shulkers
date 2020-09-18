@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "simplesoundmuffler:block/sound_muffler"
+    }
+  }
+}

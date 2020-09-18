@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "bettershulkers",
+  "version": "${version}",
+
+  "name": "Better Shulkers",
+  "description": "Adds various useful features and enchantments to shulker boxes",
+  "authors": [
+    "arxenix"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/bettershulkers/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.arxenix.bettershulkers.BetterShulkers"
+      }
+    ],
+    "mm:early_risers": [
+      "dev.arxenix.bettershulkers.asm.EarlyRiser"
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.arxenix.bettershulkers.BetterShulkersClient"
+      }
+    ]
+  },
+  "mixins": [
+    "bettershulkers.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.7.1",
+    "fabric": "*",
+    "fabric-language-kotlin": "*"
+  },
+  "recommends": {
+    "minecraft": ["1.16.2", "1.16.3"]
+  }
+}
