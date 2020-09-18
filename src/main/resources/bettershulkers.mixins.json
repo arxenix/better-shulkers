@@ -5,8 +5,10 @@
   "mixins": [
     "BlockItemMixin",
     "EnchantmentTargetMixin",
+    "ItemAccessor",
     "ItemStackMixin",
     "LootableContainerBlockEntityAccessor",
+    "ShulkerBoxBlockEntityMixin",
     "ShulkerBoxBlockMixin"
   ],
   "client": [

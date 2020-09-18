@@ -26,7 +26,9 @@ abstract class ItemStackMixin {
             at=@At("TAIL")
     )
     public void addEnchantment(Enchantment enchantment, int level, CallbackInfo ci) {
+        System.out.println("addEnchantment called");
         if (BetterShulkers.Companion.isShulker(getItem())) {
+            System.out.println("adding BET to item");
             CompoundTag beTag = getSubTag("BlockEntityTag");
             if (beTag == null) beTag = new CompoundTag();
             beTag.put("Enchantments", this.getTag().get("Enchantments"));
