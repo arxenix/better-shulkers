@@ -13,7 +13,8 @@
     "PlayerInventoryMixin",
     "ShulkerBoxBlockEntityMixin",
     "ShulkerBoxBlockEntityRendererMixin",
-    "ShulkerBoxBlockMixin"
+    "ShulkerBoxBlockMixin",
+    "ScreenAccessor"
   ],
   "client": [
   ],

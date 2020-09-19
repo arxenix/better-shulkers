@@ -2,10 +2,15 @@ package dev.arxenix.bettershulkers
 
 import dev.arxenix.bettershulkers.ducks.EnchantmentHolder
 import dev.arxenix.bettershulkers.mixin.ItemStackAccessor
+import dev.arxenix.bettershulkers.mixin.ScreenAccessor
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.event.Event
 import net.minecraft.block.Block
 import net.minecraft.block.ShulkerBoxBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.entity.player.PlayerEntity
@@ -18,6 +23,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.tag.BlockTags
 import net.minecraft.util.collection.DefaultedList
+import org.lwjgl.glfw.GLFW
 import kotlin.math.min
 
 val SHULKER_ITEMS = mutableSetOf<Item>(
@@ -210,4 +216,17 @@ fun processItemGet(player: PlayerEntity, stack: ItemStack): Boolean {
         }
     }
     return didVacuum
+}
+
+// used in ClientTickEvents->register
+val checkBackpackTick = ClientTickEvents.StartTick { client ->
+    val screen = client.currentScreen // get the inventory
+    if (screen != null && screen is HandledScreen<*>) {
+        val slot = (screen as ScreenAccessor).focusedSlot // get the hovered slot
+        if (slot != null && isShulker(slot.stack) && EnchantmentHelper.getLevel(BACKPACK_ENCHANT, slot.stack) > 0) {
+            if (screen.mouseClicked(slot.x.toDouble(), slot.y.toDouble(), GLFW.GLFW_MOUSE_BUTTON_LEFT)) { // right click to activate
+                println("Backpack activating")
+            }
+        }
+    }
 }
