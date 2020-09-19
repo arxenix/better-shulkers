@@ -8,7 +8,6 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -16,7 +15,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.ShulkerBoxSlot;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -124,10 +122,7 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
     public Text getContainerName() {
         TranslatableText name = new TranslatableText("container.shulkerBox");
         if (!enchantmentMap.isEmpty()) {
-            Style style = Style.EMPTY.withFormatting(Formatting.AQUA);
-            ItemStack myStack = ShulkerUtilsKt.itemStackFromBlockEntity((ShulkerBoxBlockEntity) (Object) this);
-            style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackContent(myStack)));
-            name.setStyle(style);
+            name.setStyle(Style.EMPTY.withFormatting(Formatting.AQUA));
         }
         return name;
     }
@@ -141,6 +136,7 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
         int extraRows = enchantmentMap.getOrDefault(BetterShulkersKt.getENLARGE_ENCHANT(), 0);
         int rows = 3 + Math.min(extraRows, 3);
 
+        //noinspection rawtypes
         ScreenHandlerType type = ScreenHandlerType.GENERIC_9X3;
         switch(rows) {
             case 4:
