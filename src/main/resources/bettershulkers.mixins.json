@@ -4,9 +4,13 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BlockItemMixin",
+    "BuiltinModelItemRendererMixin",
+    "EnchantmentHelperMixin",
     "EnchantmentTargetMixin",
     "ItemAccessor",
+    "ItemStackAccessor",
     "ItemStackMixin",
+    "PlayerInventoryMixin",
     "ShulkerBoxBlockEntityMixin",
     "ShulkerBoxBlockEntityRendererMixin",
     "ShulkerBoxBlockMixin"

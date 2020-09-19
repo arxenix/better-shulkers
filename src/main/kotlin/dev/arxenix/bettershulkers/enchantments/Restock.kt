@@ -1,5 +1,6 @@
 package dev.arxenix.bettershulkers.enchantments
 
+import dev.arxenix.bettershulkers.VACUUM_ENCHANT
 import dev.arxenix.bettershulkers.isShulker
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentTarget
@@ -22,7 +23,7 @@ class Restock(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<Equipmen
     }
 
     override fun canAccept(other: Enchantment): Boolean {
-        return super.canAccept(other)
+        return super.canAccept(other) && other != VACUUM_ENCHANT
     }
 
     override fun isAcceptableItem(stack: ItemStack): Boolean {

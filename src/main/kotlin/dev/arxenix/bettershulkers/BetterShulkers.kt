@@ -3,6 +3,7 @@ package dev.arxenix.bettershulkers
 import com.chocohead.mm.api.ClassTinkerers
 import dev.arxenix.bettershulkers.enchantments.Enlarge
 import dev.arxenix.bettershulkers.enchantments.Restock
+import dev.arxenix.bettershulkers.enchantments.Vacuum
 import dev.arxenix.bettershulkers.mixin.ItemAccessor
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
@@ -21,6 +22,7 @@ const val MODID = "bettershulkers"
 var SHULKER_ENCHANTMENT_TARGET: EnchantmentTarget? = null
 var RESTOCK_ENCHANT: Restock? = null
 var ENLARGE_ENCHANT: Enlarge? = null
+var VACUUM_ENCHANT: Vacuum? = null
 var SHULKER_ITEM_GROUP: ItemGroup? = null
 
 class BetterShulkers: ModInitializer {
@@ -39,7 +41,13 @@ class BetterShulkers: ModInitializer {
         ENLARGE_ENCHANT = Registry.register(
             Registry.ENCHANTMENT,
             Identifier(MODID, "enlarge"),
-            Enlarge(Enchantment.Rarity.UNCOMMON, SHULKER_ENCHANTMENT_TARGET!!, arrayOf())
+            Enlarge(Enchantment.Rarity.RARE, SHULKER_ENCHANTMENT_TARGET!!, arrayOf())
+        )
+
+        VACUUM_ENCHANT = Registry.register(
+            Registry.ENCHANTMENT,
+            Identifier(MODID, "vacuum"),
+            Vacuum(Enchantment.Rarity.VERY_RARE, SHULKER_ENCHANTMENT_TARGET!!, arrayOf())
         )
 
         SHULKER_ITEM_GROUP = FabricItemGroupBuilder.create(

@@ -1,7 +1,6 @@
 package dev.arxenix.bettershulkers.mixin;
 
 import dev.arxenix.bettershulkers.ShulkerUtilsKt;
-import dev.arxenix.bettershulkers.ducks.EnchantmentHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -12,8 +11,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,7 +40,7 @@ abstract class ShulkerBoxBlockMixin extends Block {
 
     /**
      * @author arxenix
-     * @reason just cuz
+     * @reason BetterShulkers
      */
     @Overwrite
     public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
@@ -60,7 +57,7 @@ abstract class ShulkerBoxBlockMixin extends Block {
 
     /**
      * @author arxenix
-     * @reason I need to overwrite the entire behavior
+     * @reason BetterShulkers
      */
     @Overwrite
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {

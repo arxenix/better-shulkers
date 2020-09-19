@@ -14,10 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemStack.class)
 abstract class ItemStackMixin {
     @Shadow public abstract Item getItem();
-
-    // nullable
-    @Shadow public abstract CompoundTag getSubTag(String key);
-
     // nullable
     @Shadow public abstract CompoundTag getTag();
 

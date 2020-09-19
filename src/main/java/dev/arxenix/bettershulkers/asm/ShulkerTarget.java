@@ -2,7 +2,6 @@ package dev.arxenix.bettershulkers.asm;
 
 import dev.arxenix.bettershulkers.ShulkerUtilsKt;
 import dev.arxenix.bettershulkers.mixin.EnchantmentTargetMixin;
-
 import net.minecraft.item.Item;
 
 public class ShulkerTarget extends EnchantmentTargetMixin {

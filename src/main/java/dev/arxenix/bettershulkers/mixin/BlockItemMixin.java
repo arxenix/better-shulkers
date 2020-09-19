@@ -1,6 +1,5 @@
 package dev.arxenix.bettershulkers.mixin;
 
-import dev.arxenix.bettershulkers.BetterShulkers;
 import dev.arxenix.bettershulkers.ShulkerUtilsKt;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;

@@ -16,16 +16,14 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.ShulkerBoxSlot;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.*;
-import net.minecraft.util.DyeColor;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -47,6 +45,12 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
     @Override
     public ListTag getEnchantments() {
         return enchantmentData;
+    }
+
+    @Override
+    public void setEnchantments(ListTag tag) {
+        this.enchantmentData = tag;
+        this.enchantmentMap = EnchantmentHelper.fromTag(enchantmentData);
     }
 
     /*
@@ -71,9 +75,15 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
         //System.out.println(tag.toString());
         if (tag.contains("Enchantments", 9)) {
             //System.out.println("has Enchantments!!");
-            this.enchantmentData = tag.getList("Enchantments", 10);
-            this.enchantmentMap = EnchantmentHelper.fromTag(enchantmentData);
+            setEnchantments(tag.getList("Enchantments", 10));
         }
+
+        /* enable glint on be
+        World world = ((ShulkerBoxBlockEntity)(Object)this).getWorld();
+        if (world != null && !world.isClient) {
+            sync();
+        }
+         */
     }
 
     /**
@@ -116,8 +126,7 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
         if (!enchantmentMap.isEmpty()) {
             Style style = Style.EMPTY.withFormatting(Formatting.AQUA);
             ItemStack myStack = ShulkerUtilsKt.itemStackFromBlockEntity((ShulkerBoxBlockEntity) (Object) this);
-            if (myStack != null)
-                style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackContent(myStack)));
+            style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackContent(myStack)));
             name.setStyle(style);
         }
         return name;
@@ -155,4 +164,17 @@ public class ShulkerBoxBlockEntityMixin implements EnchantmentHolder {
         return newHandler;
     }
 
+
+    /* enable glint on blockentity
+    @Override
+    public void fromClientTag(CompoundTag tag) {
+        this.setEnchantments(tag.getList("Enchantments", 10));
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag) {
+        tag.put("Enchantments", enchantmentData);
+        return tag;
+    }
+    */
 }
