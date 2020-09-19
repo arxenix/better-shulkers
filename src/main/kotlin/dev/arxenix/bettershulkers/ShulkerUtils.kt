@@ -8,7 +8,6 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
-import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
@@ -183,10 +182,10 @@ fun tryMerge(from: ItemStack, to: ItemStack): Boolean {
 }
 
 fun processItemGet(player: PlayerEntity, stack: ItemStack): Boolean {
-    println("got item $stack ${stack.tag.toString()}")
+    //println("got item $stack ${stack.tag.toString()}")
     val shulkers = getShulkers(player.inventory)
     val vacuums = shulkers.filter { EnchantmentHelper.getLevel(VACUUM_ENCHANT, it.second) > 0 }
-    println("have vacuums: ${vacuums.size}")
+    //println("have vacuums: ${vacuums.size}")
     var didVacuum = false
     for (vacuum in vacuums) {
         if (stack.isEmpty) return didVacuum
@@ -197,7 +196,7 @@ fun processItemGet(player: PlayerEntity, stack: ItemStack): Boolean {
         for (shulkerStack in stacks) {
             if (!shulkerStack.isEmpty) {
                 if (tryMerge(stack, shulkerStack)) {
-                    println("merge success!")
+                    //println("merge success!")
                     updatedShulker = true
                     if (stack.isEmpty)
                         break
@@ -205,7 +204,7 @@ fun processItemGet(player: PlayerEntity, stack: ItemStack): Boolean {
             }
         }
         if (updatedShulker) {
-            println("updated shulker!")
+            //println("updated shulker!")
             didVacuum = true
             setShulkerInv(shulker, stacks)
         }
