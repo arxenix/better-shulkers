@@ -8,6 +8,7 @@
     "ItemAccessor",
     "ItemStackMixin",
     "ShulkerBoxBlockEntityMixin",
+    "ShulkerBoxBlockEntityRendererMixin",
     "ShulkerBoxBlockMixin"
   ],
   "client": [

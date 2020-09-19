@@ -1,16 +1,22 @@
 package dev.arxenix.bettershulkers
 
+import dev.arxenix.bettershulkers.ducks.EnchantmentHolder
 import net.minecraft.block.Block
+import net.minecraft.block.ShulkerBoxBlock
+import net.minecraft.block.entity.ShulkerBoxBlockEntity
+import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
-import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.tag.BlockTags
 import net.minecraft.util.collection.DefaultedList
+import kotlin.math.min
 
 val SHULKER_ITEMS = mutableSetOf<Item>(
     Items.SHULKER_BOX,
@@ -44,22 +50,33 @@ fun isShulker(block: Block): Boolean {
     return block.isIn(BlockTags.SHULKER_BOXES)
 }
 
+fun getShulkerSizeFromEnchantmentsTag(tag: ListTag): Int {
+    return getShulkerSizeFromEnchantmentsMap(EnchantmentHelper.fromTag(tag))
+}
+
+fun getShulkerSizeFromEnchantmentsMap(enchants: Map<Enchantment, Int>): Int {
+    return 9 * (min(3, enchants.getOrDefault(ENLARGE_ENCHANT as Enchantment, 0)) + 3)
+}
+
+fun getShulkerSizeFromBlockEntityTag(tag: CompoundTag): Int {
+    return if (tag.contains("Enchantments", 9)) {
+        getShulkerSizeFromEnchantmentsTag(tag.getList("Enchantments", 10))
+    }
+    else 27
+}
+
 fun getShulkerInv(itemStack: ItemStack): DefaultedList<ItemStack> {
     // TODO - changeme when adding support for different shulker sizes
-    var size = 27
     val tag = itemStack.getSubTag("BlockEntityTag")
     if (tag != null) {
-        if (tag.contains("Size", 99)) {
-            size = tag.getInt("Size")
-        }
-
+        val size = getShulkerSizeFromBlockEntityTag(tag)
         val inv = DefaultedList.ofSize(size, ItemStack.EMPTY);
         if (tag.contains("Items", 9)) {
             Inventories.fromTag(tag, inv)
         }
         return inv
     }
-    else return DefaultedList.ofSize(size, ItemStack.EMPTY)
+    else return DefaultedList.ofSize(27, ItemStack.EMPTY)
 }
 
 fun setShulkerInv(itemStack: ItemStack, inv: DefaultedList<ItemStack>) {
@@ -81,10 +98,6 @@ fun getShulkers(inv: Inventory): List<Pair<Int, ItemStack>> {
     return shulkerIndexList
 }
 
-fun DefaultedList<ItemStack>.removeStack(slot: Int, amount: Int): ItemStack {
-    return Inventories.splitStack(this, slot, amount)
-}
-
 fun canTransfer(from: ItemStack, to: ItemStack): Boolean {
     return if (to.item !== from.item) {
         false
@@ -95,6 +108,24 @@ fun canTransfer(from: ItemStack, to: ItemStack): Boolean {
     } else {
         !to.hasTag() || to.tag == from.tag
     }
+}
+
+fun itemStackFromBlockEntity(sbe: ShulkerBoxBlockEntity): ItemStack? {
+    val itemStack = ShulkerBoxBlock.getItemStack(sbe.color)
+    val compoundTag = sbe.serializeInventory(CompoundTag())
+    val enchantmentData = (sbe as EnchantmentHolder).enchantments
+    if (enchantmentData != null) {
+        //System.out.println("we have enchantment data!");
+        itemStack.putSubTag("Enchantments", enchantmentData)
+        compoundTag.put("Enchantments", enchantmentData)
+    }
+    if (!compoundTag.isEmpty) {
+        itemStack.putSubTag("BlockEntityTag", compoundTag)
+    }
+    if (sbe.hasCustomName()) {
+        itemStack.setCustomName(sbe.customName)
+    }
+    return itemStack
 }
 
 fun processItemConsume(player: PlayerEntity, stack: ItemStack, slot: Int) {

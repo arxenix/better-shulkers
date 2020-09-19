@@ -10,11 +10,11 @@ import net.minecraft.item.ItemStack
 class Restock(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<EquipmentSlot>) :
     Enchantment(weight, type, slotTypes) {
     override fun getMinPower(level: Int): Int {
-        return 0
+        return 25
     }
 
     override fun getMaxPower(level: Int): Int {
-        return 100000
+        return 50
     }
 
     override fun getMaxLevel(): Int {

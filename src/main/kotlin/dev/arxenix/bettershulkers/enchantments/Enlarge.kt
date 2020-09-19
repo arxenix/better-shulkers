@@ -9,12 +9,13 @@ import net.minecraft.item.ItemStack
 
 class Enlarge(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<EquipmentSlot>) :
     Enchantment(weight, type, slotTypes) {
+
     override fun getMinPower(level: Int): Int {
-        return 0
+        return 5 + (level - 1) * 8
     }
 
     override fun getMaxPower(level: Int): Int {
-        return 100000
+        return super.getMinPower(level) + 50
     }
 
     override fun getMaxLevel(): Int {

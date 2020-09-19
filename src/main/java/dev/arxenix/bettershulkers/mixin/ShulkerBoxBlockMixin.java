@@ -1,5 +1,6 @@
 package dev.arxenix.bettershulkers.mixin;
 
+import dev.arxenix.bettershulkers.ShulkerUtilsKt;
 import dev.arxenix.bettershulkers.ducks.EnchantmentHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -49,35 +50,13 @@ abstract class ShulkerBoxBlockMixin extends Block {
         BlockEntity blockEntity = builder.getNullable(LootContextParameters.BLOCK_ENTITY);
         if (blockEntity instanceof ShulkerBoxBlockEntity) {
             ShulkerBoxBlockEntity sbe = (ShulkerBoxBlockEntity)blockEntity;
-            ItemStack is = buildItemStack(sbe);
+            ItemStack is = ShulkerUtilsKt.itemStackFromBlockEntity(sbe);
             ArrayList<ItemStack> ret = new ArrayList<>();
             ret.add(is);
             return ret;
         }
         return super.getDroppedStacks(state, builder);
     }
-
-    public ItemStack buildItemStack(ShulkerBoxBlockEntity sbe) {
-        ItemStack itemStack = ShulkerBoxBlock.getItemStack(((ShulkerBoxBlock) (Object) this).getColor());
-
-        CompoundTag compoundTag = sbe.serializeInventory(new CompoundTag());
-        ListTag enchantmentData = ((EnchantmentHolder) sbe).getEnchantments();
-        if (enchantmentData != null) {
-            //System.out.println("we have enchantment data!");
-            itemStack.putSubTag("Enchantments", enchantmentData);
-            compoundTag.put("Enchantments", enchantmentData);
-        }
-
-        if (!compoundTag.isEmpty()) {
-            itemStack.putSubTag("BlockEntityTag", compoundTag);
-        }
-
-        if (sbe.hasCustomName()) {
-            itemStack.setCustomName(sbe.getCustomName());
-        }
-        return itemStack;
-    }
-
 
     /**
      * @author arxenix
@@ -91,7 +70,7 @@ abstract class ShulkerBoxBlockMixin extends Block {
                 //System.out.println("is a shulkerboxblockentity!");
                 ShulkerBoxBlockEntity sbe = (ShulkerBoxBlockEntity) be;
 
-                ItemStack itemStack = buildItemStack(sbe);
+                ItemStack itemStack = ShulkerUtilsKt.itemStackFromBlockEntity(sbe);
 
                 ItemEntity itemEntity = new ItemEntity(world, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemStack);
                 itemEntity.setToDefaultPickupDelay();
