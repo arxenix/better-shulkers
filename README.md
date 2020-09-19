@@ -2,9 +2,9 @@
 
 This is a Minecraft mod for the Fabric Modloader, currently compatible with 1.16.2 and 1.16.3
 
-It adds several new features and enchantments to shulkerboxes to make them even more useful :)
+It adds several new features and enchantments to shulkerboxes to make them even more useful.
 
-Ideas blatantly taken from Xisumavoid's video https://www.youtube.com/watch?v=FMu8T8KriQY
+Ideas from Xisumavoid's video https://www.youtube.com/watch?v=FMu8T8KriQY
 
 # Current Features
 
