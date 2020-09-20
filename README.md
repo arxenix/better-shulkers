@@ -31,8 +31,8 @@ If a shulker with the vacuum enchant is in your inventory, then whenever you pic
 - Make Restock work with consumable items (e.g. foods, minecarts, boats) 
 - the default shulker tooltip only shows items in the first 3 rows, so fix that
 - possibly incorporate nice tooltips similar to ShulkerBoxTooltip, or find a way to make it compatible
-- add Backpack enchant
-- add Ender Power enchant
+- add Backpack functionality (will not be an enchant)
+- "ender shulkers" as described in xisuma's video are currently _not planned_
 - customize shulker box GUI to show enchants
 
 
