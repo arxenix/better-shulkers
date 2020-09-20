@@ -15,7 +15,8 @@
     "ScreenAccessor",
     "ShulkerBoxBlockEntityMixin",
     "ShulkerBoxBlockEntityRendererMixin",
-    "ShulkerBoxBlockMixin"
+    "ShulkerBoxBlockMixin",
+    "SlotAccessor"
   ],
   "client": [
   ],

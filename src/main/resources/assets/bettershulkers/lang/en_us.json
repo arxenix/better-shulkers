@@ -2,5 +2,9 @@
   "enchantment.bettershulkers.restock": "Restock",
   "enchantment.bettershulkers.vacuum": "Vacuum",
   "enchantment.bettershulkers.enlarge": "Enlarge",
-  "itemGroup.bettershulkers.item_group": "Better Shulkers"
+  "enchantment.bettershulkers.backpack":  "Backpack",
+  "itemGroup.bettershulkers.item_group": "Better Shulkers",
+  "category.bettershulkers": "Better shulkers",
+  "key.bettershulkers.use_backpack": "Open Backpack",
+  "container.backpack": "Backpack"
 }
