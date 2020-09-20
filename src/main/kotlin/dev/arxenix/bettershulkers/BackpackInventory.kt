@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 
-class BackpackInventory(var items: ListTag) : Inventory {
+class BackpackInventory(var items: ListTag, val rows: Int) : Inventory {
     override fun markDirty() {}
 
     override fun clear() {
@@ -56,7 +56,7 @@ class BackpackInventory(var items: ListTag) : Inventory {
     }
 
     override fun size(): Int {
-        return 27
+        return rows*9
     }
 
     override fun isValid(slot: Int, stack: ItemStack): Boolean {

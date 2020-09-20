@@ -18,7 +18,7 @@ class Backpack(weight: Rarity, type: EnchantmentTarget, slotTypes: Array<Equipme
     }
 
     override fun getMaxLevel(): Int {
-        return 3
+        return 1
     }
 
     override fun canAccept(other: Enchantment): Boolean {

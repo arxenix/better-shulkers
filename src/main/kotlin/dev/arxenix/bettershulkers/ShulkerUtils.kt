@@ -6,22 +6,18 @@ import dev.arxenix.bettershulkers.mixin.ItemStackAccessor
 import dev.arxenix.bettershulkers.mixin.ScreenAccessor
 import dev.arxenix.bettershulkers.mixin.SlotAccessor
 import io.netty.buffer.Unpooled
-import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
 import net.fabricmc.fabric.api.network.PacketContext
+import net.fabricmc.fabric.api.util.NbtType
 import net.minecraft.block.Block
 import net.minecraft.block.ShulkerBoxBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.Inventories
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.Item
@@ -37,8 +33,6 @@ import net.minecraft.tag.BlockTags
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.collection.DefaultedList
-import org.lwjgl.glfw.GLFW
-import org.lwjgl.glfw.GLFWMouseButtonCallback
 import kotlin.math.min
 
 val SHULKER_ITEMS = mutableSetOf<Item>(
@@ -271,19 +265,33 @@ fun getInventorySlot(inventory : ListTag, slot : Int): CompoundTag? {
     return null
 }
 
+fun getItems(shulker: ItemStack): ListTag {
+    val tag = shulker.orCreateTag.getCompound("BlockEntityTag")
+    if (!tag.contains("Items")) tag.put("Items", ListTag())
+    return tag.getList("Items", NbtType.COMPOUND)
+}
+
 fun openServerBackpack(packetContext: PacketContext, attachedData: PacketByteBuf) {
     //val backpack = attachedData.readItemStack()
     val slotId = attachedData.readInt()
     val slot = packetContext.player.inventory!!.getStack(slotId)
+    val rows = EnchantmentHelper.getLevel(ENLARGE_ENCHANT, slot) + 3
+    val handlerType = when (rows) {
+        3 -> ScreenHandlerType.GENERIC_9X3
+        4 -> ScreenHandlerType.GENERIC_9X4
+        5 -> ScreenHandlerType.GENERIC_9X5
+        6 -> ScreenHandlerType.GENERIC_9X6
+        else -> throw Exception("Should have 3-6 rows")
+    }
     packetContext.taskQueue.execute {
         val containerName : Text = if (slot.hasCustomName()) slot.name else TranslatableText("container.backpack")
         packetContext.player.openHandledScreen(
             SimpleNamedScreenHandlerFactory({id, inventory, player -> GenericContainerScreenHandler(
-                ScreenHandlerType.GENERIC_9X3,
+                handlerType,
                 id,
                 player.inventory,
-                BackpackInventory(slot.orCreateTag.getCompound("BlockEntityTag").getList("Items", 10)),
-                3
+                BackpackInventory(getItems(slot), rows),
+                rows
             )}, containerName)
         )
     }
