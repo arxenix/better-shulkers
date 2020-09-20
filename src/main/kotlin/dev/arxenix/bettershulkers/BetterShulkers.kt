@@ -9,7 +9,10 @@ import dev.arxenix.bettershulkers.mixin.ItemAccessor
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.event.Event
+import net.minecraft.client.options.KeyBinding
+import net.minecraft.client.util.InputUtil
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentTarget
 import net.minecraft.item.ItemGroup
@@ -19,6 +22,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.lwjgl.glfw.GLFW
 
 val LOGGER: Logger = LogManager.getLogger()
 const val MODID = "bettershulkers"
@@ -29,6 +33,7 @@ var ENLARGE_ENCHANT: Enlarge? = null
 var VACUUM_ENCHANT: Vacuum? = null
 var BACKPACK_ENCHANT: Backpack? = null
 var SHULKER_ITEM_GROUP: ItemGroup? = null
+var USE_BACKPACK_KEY: KeyBinding? = null
 
 class BetterShulkers: ModInitializer {
     override fun onInitialize() {
@@ -71,13 +76,21 @@ class BetterShulkers: ModInitializer {
             .build()
         SHULKER_ITEM_GROUP!!.setEnchantments(SHULKER_ENCHANTMENT_TARGET)
 
+        USE_BACKPACK_KEY = KeyBindingHelper.registerKeyBinding(
+            KeyBinding(
+            "key.${MODID}.use_backpack",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_B,
+            "category.${MODID}"
+        )
+        )
+
         for (item in SHULKER_ITEMS) {
             (item as ItemAccessor).setGroup(SHULKER_ITEM_GROUP)
         }
 
         // Backpack player tick event
-        // TODO: is this START_CLIENT_TICK, or END?
-        ClientTickEvents.START_CLIENT_TICK.register(checkBackpackTick)
+        ClientTickEvents.END_CLIENT_TICK.register(checkBackpackTick)
     }
 }
 

@@ -7,14 +7,15 @@
     "BuiltinModelItemRendererMixin",
     "EnchantmentHelperMixin",
     "EnchantmentTargetMixin",
+    "HandledScreenMixin",
     "ItemAccessor",
     "ItemStackAccessor",
     "ItemStackMixin",
     "PlayerInventoryMixin",
+    "ScreenAccessor",
     "ShulkerBoxBlockEntityMixin",
     "ShulkerBoxBlockEntityRendererMixin",
-    "ShulkerBoxBlockMixin",
-    "ScreenAccessor"
+    "ShulkerBoxBlockMixin"
   ],
   "client": [
   ],
