@@ -40,6 +40,7 @@ If a shulker with the vacuum enchant is in your inventory, then whenever you pic
 - If you make use of Loot Tables for shulker boxes, they will not work, as the mod currently completely overwrites the Shulker box drop function
 - Probably incompatible with any other mod that touches shulker boxes. Let me know which ones and I'll attempt to make it compatible
 - Pick block in creative mode does not copy the shulker box enchantments
+- Currently, if you use a grindstone on a shulker with the enlarge enchant, the items become inaccessible.
 
 
 ## Dependencies
