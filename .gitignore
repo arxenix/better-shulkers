@@ -19,5 +19,6 @@ bin/
 
 run/
 minecraft/
+logs/
 
 production/
