@@ -32,6 +32,12 @@
         "adapter": "kotlin",
         "value": "dev.arxenix.bettershulkers.BetterShulkersClient"
       }
+    ],
+    "shulkerboxtooltip": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.arxenix.bettershulkers.compatibility.ShulkerBoxTooltipHook"
+      }
     ]
   },
   "mixins": [
@@ -44,5 +50,11 @@
   },
   "recommends": {
     "minecraft": ["1.16.2", "1.16.3"]
+  },
+  "suggests": {
+    "shulkerboxtooltip": ">=2.3.0"
+  },
+  "breaks": {
+    "shulkerboxtooltip": "<2.3.0"
   }
 }

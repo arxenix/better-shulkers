@@ -26,6 +26,10 @@ repositories {
         url = 'https://jitpack.io'
     }
 
+    maven {
+        name = "ShulkerBoxTooltip"
+        url = "https://maven.misterpemodder.com/libs-release"
+    }
     jcenter()
 }
 
@@ -43,6 +47,9 @@ dependencies {
     // fabric-asm / Manningham-Mills
     modImplementation 'com.github.Chocohead:Fabric-ASM:v2.0.1'
     include 'com.github.Chocohead:Fabric-ASM:v2.0.1'
+
+    // ShulkerBoxTooltip
+    modImplementation "com.misterpemodder:shulkerboxtooltip:${project.shulkerboxtooltip_version}"
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
