@@ -1,11 +1,20 @@
 package dev.arxenix.bettershulkers
 
+import dev.arxenix.bettershulkers.ducks.BackpackHandledScreen
 import dev.arxenix.bettershulkers.ducks.EnchantmentHolder
 import dev.arxenix.bettershulkers.mixin.ItemStackAccessor
+import dev.arxenix.bettershulkers.mixin.ScreenAccessor
+import dev.arxenix.bettershulkers.mixin.SlotAccessor
+import io.netty.buffer.Unpooled
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry
+import net.fabricmc.fabric.api.network.PacketContext
+import net.fabricmc.fabric.api.util.NbtType
 import net.minecraft.block.Block
 import net.minecraft.block.ShulkerBoxBlock
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
+import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.entity.player.PlayerEntity
@@ -16,7 +25,13 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
+import net.minecraft.network.PacketByteBuf
+import net.minecraft.screen.GenericContainerScreenHandler
+import net.minecraft.screen.ScreenHandlerType
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory
 import net.minecraft.tag.BlockTags
+import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.collection.DefaultedList
 import kotlin.math.min
 
@@ -76,7 +91,7 @@ fun getShulkerInv(itemStack: ItemStack): DefaultedList<ItemStack> {
     val tag = itemStack.getSubTag("BlockEntityTag")
     if (tag != null) {
         val size = getShulkerSizeFromBlockEntityTag(tag)
-        val inv = DefaultedList.ofSize(size, ItemStack.EMPTY);
+        val inv = DefaultedList.ofSize(size, ItemStack.EMPTY)
         if (tag.contains("Items", 9)) {
             Inventories.fromTag(tag, inv)
         }
@@ -210,4 +225,75 @@ fun processItemGet(player: PlayerEntity, stack: ItemStack): Boolean {
         }
     }
     return didVacuum
+}
+
+// used in ClientTickEvents->register
+val checkBackpackTick = ClientTickEvents.EndTick { client ->
+    val screen = client.currentScreen // get the inventory
+    if (screen != null && screen is HandledScreen<*>) {
+        val slot = (screen as ScreenAccessor).focusedSlot // get the hovered slot
+        if (slot != null && isShulker(slot.stack) && EnchantmentHelper.getLevel(BACKPACK_ENCHANT, slot.stack) > 0) {
+            if ((screen as BackpackHandledScreen).backpackKeyPressed) { // right click to activate
+                openBackpackScreen((slot as SlotAccessor).index)
+                (screen as BackpackHandledScreen).resetBackpackKey()
+            }
+        }
+        (screen as BackpackHandledScreen).resetBackpackKey()
+    } else if (USE_BACKPACK_KEY!!.wasPressed()) {
+        val selectedSlot = client.player!!.inventory.selectedSlot
+        val selectedItem = client.player!!.inventory.getStack(selectedSlot)
+        if (isShulker(selectedItem) && EnchantmentHelper.getLevel(BACKPACK_ENCHANT, selectedItem) > 0) {
+            openBackpackScreen(selectedSlot)
+        }
+    }
+}
+
+fun openBackpackScreen(slot: Int) {
+    //client.player!!.closeHandledScreen()
+    val passedData = PacketByteBuf(Unpooled.buffer())
+    //passedData.writeItemStack(backpack)
+    passedData.writeInt(slot)
+    ClientSidePacketRegistry.INSTANCE.sendToServer(OPEN_BACKPACK_PACKET_ID, passedData)
+
+}
+
+fun getInventorySlot(inventory : ListTag, slot : Int): CompoundTag? {
+    for (item in inventory) {
+        if ((item as? CompoundTag)?.getInt("Slot") == slot)
+            return item
+    }
+    return null
+}
+
+fun getItems(shulker: ItemStack): ListTag {
+    val tag = shulker.orCreateTag.getCompound("BlockEntityTag")
+    if (!tag.contains("Items")) tag.put("Items", ListTag())
+    return tag.getList("Items", NbtType.COMPOUND)
+}
+
+fun openServerBackpack(packetContext: PacketContext, attachedData: PacketByteBuf) {
+    //val backpack = attachedData.readItemStack()
+    val slotId = attachedData.readInt()
+    val slot = packetContext.player.inventory!!.getStack(slotId)
+    val rows = EnchantmentHelper.getLevel(ENLARGE_ENCHANT, slot) + 3
+    val handlerType = when (rows) {
+        3 -> ScreenHandlerType.GENERIC_9X3
+        4 -> ScreenHandlerType.GENERIC_9X4
+        5 -> ScreenHandlerType.GENERIC_9X5
+        6 -> ScreenHandlerType.GENERIC_9X6
+        else -> throw Exception("Should have 3-6 rows")
+    }
+    packetContext.taskQueue.execute {
+        val containerName : Text = if (slot.hasCustomName()) slot.name else TranslatableText("container.backpack")
+        packetContext.player.openHandledScreen(
+            SimpleNamedScreenHandlerFactory({id, inventory, player -> GenericContainerScreenHandler(
+                handlerType,
+                id,
+                player.inventory,
+                BackpackInventory(getItems(slot), rows),
+                rows
+            )}, containerName)
+        )
+    }
+
 }

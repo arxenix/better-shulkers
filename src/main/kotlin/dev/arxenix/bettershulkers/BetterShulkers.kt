@@ -1,12 +1,19 @@
 package dev.arxenix.bettershulkers
 
 import com.chocohead.mm.api.ClassTinkerers
+import dev.arxenix.bettershulkers.enchantments.Backpack
 import dev.arxenix.bettershulkers.enchantments.Enlarge
 import dev.arxenix.bettershulkers.enchantments.Restock
 import dev.arxenix.bettershulkers.enchantments.Vacuum
 import dev.arxenix.bettershulkers.mixin.ItemAccessor
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.fabricmc.fabric.api.event.Event
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry
+import net.minecraft.client.options.KeyBinding
+import net.minecraft.client.util.InputUtil
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentTarget
 import net.minecraft.item.ItemGroup
@@ -16,6 +23,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.lwjgl.glfw.GLFW
 
 val LOGGER: Logger = LogManager.getLogger()
 const val MODID = "bettershulkers"
@@ -24,9 +32,17 @@ var SHULKER_ENCHANTMENT_TARGET: EnchantmentTarget? = null
 var RESTOCK_ENCHANT: Restock? = null
 var ENLARGE_ENCHANT: Enlarge? = null
 var VACUUM_ENCHANT: Vacuum? = null
+var BACKPACK_ENCHANT: Backpack? = null
 var SHULKER_ITEM_GROUP: ItemGroup? = null
+var USE_BACKPACK_KEY: KeyBinding? = null //foo
+val OPEN_BACKPACK_PACKET_ID = Identifier("bettershulkers", "openbackpack")
 
 class BetterShulkers: ModInitializer {
+
+    /*companion object {
+        var BACKPACK_ENCHANT: Backpack? = null
+    }*/
+
     override fun onInitialize() {
         LOGGER.info("BetterShulkers - fabric mod initialized")
 
@@ -51,6 +67,12 @@ class BetterShulkers: ModInitializer {
             Vacuum(Enchantment.Rarity.VERY_RARE, SHULKER_ENCHANTMENT_TARGET!!, arrayOf())
         )
 
+        BACKPACK_ENCHANT = Registry.register(
+            Registry.ENCHANTMENT,
+            Identifier(MODID, "backpack"),
+            Backpack(Enchantment.Rarity.VERY_RARE, SHULKER_ENCHANTMENT_TARGET!!, arrayOf())
+        )
+
         SHULKER_ITEM_GROUP = FabricItemGroupBuilder.create(
             Identifier(MODID, "item_group")
         )
@@ -61,12 +83,26 @@ class BetterShulkers: ModInitializer {
             .build()
         SHULKER_ITEM_GROUP!!.setEnchantments(SHULKER_ENCHANTMENT_TARGET)
 
+        USE_BACKPACK_KEY = KeyBindingHelper.registerKeyBinding(
+            KeyBinding(
+            "key.${MODID}.use_backpack",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_B,
+            "category.${MODID}"
+        )
+        )
+
         for (item in SHULKER_ITEMS) {
             (item as ItemAccessor).setGroup(SHULKER_ITEM_GROUP)
         }
+
+        // Backpack player tick event
+        ClientTickEvents.END_CLIENT_TICK.register(checkBackpackTick)
+
+        //Backpack opening handling
+        ServerSidePacketRegistry.INSTANCE.register(OPEN_BACKPACK_PACKET_ID, ::openServerBackpack)
     }
 }
-
 
 
 
